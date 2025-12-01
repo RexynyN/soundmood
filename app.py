@@ -1,11 +1,26 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import route
+import logging
+import config as settings
+
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
-app = FastAPI()
+# Criar instância da aplicação FastAPI
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    version=settings.VERSION,
+    description=settings.DESCRIPTION,
+    openapi_url=f"{settings.API_V1_STR}/openapi.json"
+)
 
 app.include_router(route.router)
+
+app.include_router(artigos.router, prefix="/api/v1/artigos", tags=["artigos"])
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,3 +34,15 @@ app.add_middleware(
 @app.get("/")
 async def main():
     return { "message": "API Running :^)"}
+
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "app.main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        log_level="info"
+    )

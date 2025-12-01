@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import route
 import logging
-import config as settings
+from config import settings
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -17,9 +17,8 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
-app.include_router(route.router)
 
-app.include_router(artigos.router, prefix="/api/v1/artigos", tags=["artigos"])
+app.include_router(route.router, prefix="/api/v1/artigos", tags=["artigos"])
 
 
 app.add_middleware(
